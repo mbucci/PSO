@@ -42,6 +42,7 @@ public class PSORunner {
 		
 		this.testFunction = function;
 		this.particles = ps;
+		this.bestValue = Double.MAX_VALUE;
 		
 		// create particles and calculate initial personal bests; 
 		// find the initial global best
@@ -92,6 +93,7 @@ public class PSORunner {
 				
 				// ****** find the value of the new position
 				double currValue = eval(temp);
+				//System.out.println(currValue);
 				
 				// ****** update personal best and global best, if necessary
 				if (currValue <= temp.personalBestValue) {
@@ -99,16 +101,22 @@ public class PSORunner {
 					temp.personalBestValue = currValue;
 				}
 				
+				
 				for (int h = 0; h < temp.getHoodSize(); h++) {
+					//System.out.println(temp.getHoodSize());
 					
 					Particle hoodMem = particles.get(temp.getNeighborhoodMember(h));
+					double memValue = eval(hoodMem);
 					
 					if (currValue <= temp.hoodBestValue) {
 						temp.hoodBestLoc = temp.location;
 						temp.hoodBestValue = currValue;
-					} else if (hoodMem.personalBestValue <= temp.hoodBestValue) {
+						System.out.println(temp.hoodBestValue);
+					} 
+					if (memValue <= temp.hoodBestValue) {
 						temp.hoodBestLoc = hoodMem.location;
-						temp.hoodBestValue = hoodMem.personalBestValue;
+						temp.hoodBestValue = memValue;
+						//System.out.println(temp.hoodBestValue);
 					}
 				}
 				
@@ -158,7 +166,7 @@ public class PSORunner {
 			double currentPlus1 = part.location[i+1];
 			ret += Math.pow((1-current),2) + 100.0*Math.pow((currentPlus1-current*current),2);
 		}
-		
+
 		return ret;
 	}
 	
