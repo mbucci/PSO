@@ -81,6 +81,11 @@ public class PSO {
 			System.exit(0);
 		} 
 		
+		if (!(swarmSize==12 || swarmSize==20 || swarmSize==50)) {
+			System.out.println("Choose a swarm size of 12, 20, or 50");
+			System.exit(0);
+		}
+
 		runner = new PSORunner(testFunction, particles);
 		runner.runPSO(numIterations);
 	}
@@ -113,27 +118,49 @@ public class PSO {
 	/* Neighborhood is the two particles directly to left and right of it */
 	public static void initTopologyRing() {
 		for (int i = 0; i < swarmSize; i++) {
-			int[] hood = new int[2];
+			int[] temp = new int[2];
 			if (i == 0) {
-				hood[0] = swarmSize-1;
-				hood[1] = 1;
+				temp[0] = swarmSize-1;
+				temp[1] = 1;
 			}
 			else if (i == swarmSize-1) {
-				hood[0] = swarmSize - 2;
-				hood[1] = 0;
+				temp[0] = swarmSize - 2;
+				temp[1] = 0;
 			}
 			else {
-				hood[0] = i-1;
-				hood[1] = i+1;
+				temp[0] = i-1;
+				temp[1] = i+1;
 			}
-			particles.get(i).setNeighborhood(hood, 2);
+			particles.get(i).setNeighborhood(temp, 2);
 		}
 	}
 	
-	
+	/* In size 4 array holds [up, down, left, right] neighbors */
 	public static void initTopologyVonNeumann() {
-	
-		
+		// 12 particles: 3x4 array
+		// 20 particles: 4x5 array
+		// 50 particles: 5x10 array
+		int rowSize = 5; // 20 or 50 particle swarm
+
+		for (int i = 0; i < swarmSize; i++) {
+			int[] temp = new int[4];
+
+			if (swarmSize==12) { //12 particle swarm
+				rowSize = 4;
+			}
+
+			temp[0] = (i-rowSize)%swarmSize;
+			temp[1] = (i+rowSize)%swarmSize;
+
+			if (i%rowSize == 0) { //left column
+				temp[2] = i+(rowSize-1);
+				temp[3] = i+1;
+			} else if ((i+1)%rowSize==0) { //right column
+				temp[2] = i-1;
+				temp[3] = i-(rowSize-1);
+			}
+			particles.get(i).setNeighborhood(temp, 4);
+		}
 	}
 	
 	
