@@ -110,10 +110,24 @@ public class PSO {
 		}
 	}
 	
-	
+	/* Neighborhood is the two particles directly to left and right of it */
 	public static void initTopologyRing() {
-	
-		
+		for (int i = 0; i < swarmSize; i++) {
+			int[] hood = new int[2];
+			if (i == 0) {
+				hood[0] = swarmSize-1;
+				hood[1] = 1;
+			}
+			else if (i == swarmSize-1) {
+				hood[0] = swarmSize - 2;
+				hood[1] = 0;
+			}
+			else {
+				hood[0] = i-1;
+				hood[1] = i+1;
+			}
+			particles.get(i).setNeighborhood(hood, 2);
+		}
 	}
 	
 	
