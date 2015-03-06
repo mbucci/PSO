@@ -46,6 +46,8 @@ public class PSO {
 		testFunction = args[3];
 		dimension = Integer.parseInt(args[4]);
 		
+		//set bounds for initial position and speed depending on
+		//evaluation function chosen
 		if (testFunction.equals("rok")) {
 			minPosition = 15.0;
 			maxPosition = 30.0;
@@ -68,6 +70,7 @@ public class PSO {
 		
 		initParticles();
 		
+		//Set topology given that chosen by user
 		if (topology.equals("gl")) {
 			initTopologyGlobal();
 		} else if (topology.equals("ri")) {
@@ -85,7 +88,8 @@ public class PSO {
 			System.out.println("Choose a swarm size of 12, 20, or 50");
 			System.exit(0);
 		}
-
+		
+		//Run it
 		runner = new PSORunner(testFunction, particles);
 		runner.runPSO(numIterations);
 	}

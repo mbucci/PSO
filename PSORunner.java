@@ -52,12 +52,12 @@ public class PSORunner {
 			
 			// initial value
 			double currValue = eval(ps.get(i));
-			
 			temp.personalBestValue = currValue;
+			temp.personalBestLoc = Arrays.copyOf(temp.location, temp.getDimension());
 			
-			// ****** check for new global best and store, if necessary, in the variables provided
+			// ****** check for new hood best and store, if necessary, in the variables provided
 			if (currValue <= temp.hoodBestValue) {
-				temp.hoodBestLoc = temp.location;
+				temp.hoodBestLoc = Arrays.copyOf(temp.location, temp.getDimension());;
 				temp.hoodBestValue = currValue;
 			} 
 		}
@@ -72,7 +72,7 @@ public class PSORunner {
 			System.out.println("Iteration #" + count + " Best value: " + bestValue);
 			// update all the particles
 			for (int i = 0 ; i < this.particles.size() ; i++) {
-				
+
 				Particle temp = this.particles.get(i);
 				for (int j = 0; j < temp.getDimension(); j++) {
 					// ****** compute the acceleration due to personal best
@@ -82,7 +82,7 @@ public class PSORunner {
 					double gAccel = temp.hoodBestLoc[j] - temp.location[j];
 					
 					// ****** constrict the new velocity and reset the current velocity
-					double newVel = (temp.velocity[j] + ((rand.nextDouble() * PHI1) * pAccel) + ((rand.nextDouble() * PHI1) * gAccel));
+					double newVel = (temp.velocity[j] + ((rand.nextDouble() * PHI1) * pAccel) + ((rand.nextDouble() * PHI2) * gAccel));
 					newVel = CONSTRICTION_FACTOR * newVel;
 					temp.velocity[j] = newVel;
 					
@@ -93,37 +93,33 @@ public class PSORunner {
 				
 				// ****** find the value of the new position
 				double currValue = eval(temp);
-				//System.out.println(currValue);
 				
 				// ****** update personal best and global best, if necessary
 				if (currValue <= temp.personalBestValue) {
-					temp.personalBestLoc = temp.location;
+					temp.personalBestLoc = Arrays.copyOf(temp.location, temp.getDimension());
 					temp.personalBestValue = currValue;
 				}
 				
-				
+				// ***** update neighborhood best, if necessary
 				for (int h = 0; h < temp.getHoodSize(); h++) {
-					//System.out.println(temp.getHoodSize());
 					
 					Particle hoodMem = particles.get(temp.getNeighborhoodMember(h));
 					double memValue = eval(hoodMem);
 					
 					if (currValue <= temp.hoodBestValue) {
-						temp.hoodBestLoc = temp.location;
+						temp.hoodBestLoc = Arrays.copyOf(temp.location, temp.getDimension());
 						temp.hoodBestValue = currValue;
-						System.out.println(temp.hoodBestValue);
 					} 
 					if (memValue <= temp.hoodBestValue) {
-						temp.hoodBestLoc = hoodMem.location;
+						temp.hoodBestLoc = Arrays.copyOf(hoodMem.location, hoodMem.getDimension());
 						temp.hoodBestValue = memValue;
-						//System.out.println(temp.hoodBestValue);
 					}
 				}
 				
+				// ****** update overall best 
 				if (temp.hoodBestValue <= bestValue) {
+					this.bestLoc = Arrays.copyOf(temp.hoodBestLoc, temp.getDimension());
 					this.bestValue = temp.hoodBestValue;
-					this.bestLoc = temp.hoodBestLoc;
-						
 				}
 			}
 			count++;	
@@ -133,12 +129,6 @@ public class PSORunner {
 	
 	//Returns the value of the specified function for point (x, y)
 	public double eval(Particle part) {
-		
-		/*
-		for (int i = 0; i < part.getDimension(); i++) {
-			part.getLocation()[i] -= FUNCTION_SHIFT;	  
-		}
-		*/
 		
 		double ret = 0.0;
 		

@@ -43,15 +43,13 @@ public class Particle {
 	//Initiliaze a particle given location and speed bounds
 	public Particle initParticle(int bound, double minLoc, double maxLoc, double minSpeed, double maxSpeed) {
 		
-		double temp = bound * rand.nextDouble();
-		while (temp < minLoc || temp > maxLoc) {
-			temp = bound * rand.nextDouble();
-		}
-		
 		for (int i = 0; i < this.dimension; i++) {
+			double temp = bound * rand.nextDouble();
+			while (temp < minLoc || temp > maxLoc) {
+				temp = bound * rand.nextDouble();
+			}
 			this.location[i] = temp;
 			this.velocity[i] = minSpeed + rand.nextDouble() * (maxSpeed - minSpeed);
-			this.personalBestLoc = this.location;
 			this.personalBestValue = Double.MAX_VALUE;
 			this.hoodBestValue = Double.MAX_VALUE;		
 		}
