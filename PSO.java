@@ -172,8 +172,6 @@ public class PSO {
 				temp[3] = i+1;
 			}
 
-			System.out.println(i+": "+temp[0]+", "+temp[1]+", "+temp[2]+", "+temp[3]);
-
 			particles.get(i).setNeighborhood(temp, 4);
 		}
 	}
