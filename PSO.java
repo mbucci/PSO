@@ -91,7 +91,7 @@ public class PSO {
 		
 		//Run it
 		runner = new PSORunner(testFunction, particles);
-		runner.runPSO(numIterations);
+		runner.runPSO(numIterations, topology);
 	}
 	
 	
@@ -182,14 +182,23 @@ public class PSO {
 	
 	
 	public static void initTopologyRandom() {
-		int K=5; //neiborhood size
+		int K=5; //neighborhood size
 		Random rand = new Random();
 		
 		for (int i=0; i<swarmSize;i++ ){
-			int[] temp = new int[K-1];
-			//initia
-			for (int j=0; j<K-1; j++){
-				temp[j]=(int)rand.nextDouble()*(K-1);
+			int[] temp = new int[K];
+			int index;
+			//initialization
+			for (int j=0; j<K; j++){
+				index=(int)(rand.nextDouble()*(swarmSize));
+				// System.out.println("##"+index);
+				//the particle itself will not be in the neighborhood
+				while(index==i){
+					index=(int)rand.nextDouble()*(swarmSize);
+					// System.out.println("&&"+index+"+"+i);
+				}
+				
+				temp[j]=index;
 			}
 			
 			particles.get(i).setNeighborhood(temp, K-1);

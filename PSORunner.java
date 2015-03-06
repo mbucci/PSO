@@ -59,17 +59,21 @@ public class PSORunner {
 			if (currValue <= temp.hoodBestValue) {
 				temp.hoodBestLoc = Arrays.copyOf(temp.location, temp.getDimension());;
 				temp.hoodBestValue = currValue;
+				updateHoodBest(temp);
 			} 
 		}
 	}
 	
 	
 	//Run PSO
-	public void runPSO(int numIterations) {
+	public void runPSO(int numIterations, String topology) {
 		
 		int count = 1;
 		do {
-			System.out.println("Iteration #" + count + " Best value: " + bestValue);
+
+			if (count%10 == 0){
+				System.out.println("Iteration #" + count + " Best value: " + bestValue);
+			}
 			// update all the particles
 			for (int i = 0 ; i < this.particles.size() ; i++) {
 
@@ -109,10 +113,13 @@ public class PSORunner {
 					if (currValue <= temp.hoodBestValue) {
 						temp.hoodBestLoc = Arrays.copyOf(temp.location, temp.getDimension());
 						temp.hoodBestValue = currValue;
+
 					} 
 					if (memValue <= temp.hoodBestValue) {
 						temp.hoodBestLoc = Arrays.copyOf(hoodMem.location, hoodMem.getDimension());
 						temp.hoodBestValue = memValue;
+						updateHoodBest(temp);
+
 					}
 				}
 				
@@ -122,14 +129,51 @@ public class PSORunner {
 					this.bestValue = temp.hoodBestValue;
 				}
 			}
-			count++;	
+
+			/*update the random neighborhood if necessary */
+			if(topology.equals("ra")){
+				for (int i = 0 ; i < this.particles.size() ; i++) {
+					
+					Particle temp = this.particles.get(i);
+					
+					int K=5; //neighborhood size
+					Random rand = new Random();
+					
+					for (int j=0; j<temp.getHoodSize();j++ ){
+						int[] newHood = new int[K];
+						int index;
+						//initialization
+						for (int m=0; m<K; m++){
+							index=(int)(rand.nextDouble()*(this.particles.size()));
+							
+							//the particle itself will not be in the neighborhood
+							while(index==i){
+								index=(int)(rand.nextDouble()*(this.particles.size()));
+							}
+							
+							newHood[m]=index;
+						}
+						
+						temp.setNeighborhood(newHood, K);
+					}
+				
+				}
+			}   
+			count++;    
 		} while (count <= numIterations);
 	}
 	
+	private void updateHoodBest(Particle temp){
+		for (int m = 0; m < temp.getHoodSize(); m++) {
+			particles.get(temp.getNeighborhoodMember(m)).hoodBestValue = temp.hoodBestValue;
+			particles.get(temp.getNeighborhoodMember(m)).hoodBestLoc = Arrays.copyOf(temp.hoodBestLoc, temp.getDimension());
+		}
+	}
+
 	
 	//Returns the value of the specified function for point (x, y)
 	public double eval(Particle part) {
-		
+
 		double ret = 0.0;
 		
 		if (this.testFunction.equals(ROSENBROCK_FUNCTION_NUM)) {
@@ -168,7 +212,7 @@ public class PSORunner {
 		double ret = 0.0;
 		for (int i = 0; i < part.getDimension(); i++) {
 			double temp = part.location[i];
-			ret += temp*temp - 10.0*Math.cos(2.0*Math.PI*temp) + 10.0;	  
+			ret += temp*temp - 10.0*Math.cos(2.0*Math.PI*temp) + 10.0;    
 		}
 		
 		return ret;
