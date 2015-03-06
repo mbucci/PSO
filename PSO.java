@@ -149,8 +149,17 @@ public class PSO {
 				rowSize = 4;
 			}
 
-			temp[0] = (i-rowSize)%swarmSize;
-			temp[1] = (i+rowSize)%swarmSize;
+			if (i<rowSize) { // top row
+				temp[0] = swarmSize+i-rowSize;
+				temp[1] = i+rowSize;
+			} else if (i+rowSize >= swarmSize) { // bottom row
+				temp[0] = i-rowSize;
+				temp[1] = i+rowSize-swarmSize;
+			} else {
+				temp[0] = i-rowSize;
+				temp[1] = i+rowSize;
+			}
+
 
 			if (i%rowSize == 0) { //left column
 				temp[2] = i+(rowSize-1);
@@ -162,6 +171,9 @@ public class PSO {
 				temp[2] = i-1;
 				temp[3] = i+1;
 			}
+
+			System.out.println(i+": "+temp[0]+", "+temp[1]+", "+temp[2]+", "+temp[3]);
+
 			particles.get(i).setNeighborhood(temp, 4);
 		}
 	}
