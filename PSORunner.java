@@ -65,11 +65,14 @@ public class PSORunner {
 	
 	
 	//Run PSO
-	public void runPSO(int numIterations) {
+	public void runPSO(int numIterations, String topology) {
 		
 		int count = 1;
 		do {
-			System.out.println("Iteration #" + count + " Best value: " + bestValue);
+
+			if (count%10 == 0){
+				System.out.println("Iteration #" + count + " Best value: " + bestValue);
+			}
 			// update all the particles
 			for (int i = 0 ; i < this.particles.size() ; i++) {
 				
@@ -82,7 +85,7 @@ public class PSORunner {
 					double gAccel = temp.hoodBestLoc[j] - temp.location[j];
 					
 					// ****** constrict the new velocity and reset the current velocity
-					double newVel = (temp.velocity[j] + ((rand.nextDouble() * PHI1) * pAccel) + ((rand.nextDouble() * PHI1) * gAccel));
+					double newVel = (temp.velocity[j] + ((rand.nextDouble() * PHI1) * pAccel) + ((rand.nextDouble() * PHI2) * gAccel));
 					newVel = CONSTRICTION_FACTOR * newVel;
 					temp.velocity[j] = newVel;
 					
@@ -93,7 +96,7 @@ public class PSORunner {
 				
 				// ****** find the value of the new position
 				double currValue = eval(temp);
-				//System.out.println(currValue);
+				// System.out.println(currValue);
 				
 				// ****** update personal best and global best, if necessary
 				if (currValue <= temp.personalBestValue) {
@@ -111,7 +114,7 @@ public class PSORunner {
 					if (currValue <= temp.hoodBestValue) {
 						temp.hoodBestLoc = temp.location;
 						temp.hoodBestValue = currValue;
-						System.out.println(temp.hoodBestValue);
+						// System.out.println(temp.hoodBestValue);
 					} 
 					if (memValue <= temp.hoodBestValue) {
 						temp.hoodBestLoc = hoodMem.location;
@@ -126,7 +129,37 @@ public class PSORunner {
 						
 				}
 			}
-			count++;	
+
+			/*update the random neighborhood if necessary */
+			if(topology.equals("ra")){
+				for (int i = 0 ; i < this.particles.size() ; i++) {
+					
+					Particle temp = this.particles.get(i);
+					
+					int K=5; //neighborhood size
+					Random rand = new Random();
+					
+					for (int j=0; j<temp.getHoodSize();j++ ){
+						int[] newHood = new int[K];
+						int index;
+						//initialization
+						for (int m=0; m<K; m++){
+							index=(int)(rand.nextDouble()*(this.particles.size()));
+							
+							//the particle itself will not be in the neighborhood
+							while(index==i){
+								index=(int)(rand.nextDouble()*(this.particles.size()));
+							}
+							
+							newHood[m]=index;
+						}
+						
+						temp.setNeighborhood(newHood, K);
+					}
+				
+				}
+			}   
+			count++;    
 		} while (count <= numIterations);
 	}
 	
@@ -136,7 +169,7 @@ public class PSORunner {
 		
 		/*
 		for (int i = 0; i < part.getDimension(); i++) {
-			part.getLocation()[i] -= FUNCTION_SHIFT;	  
+			part.getLocation()[i] -= FUNCTION_SHIFT;      
 		}
 		*/
 		
@@ -178,7 +211,7 @@ public class PSORunner {
 		double ret = 0.0;
 		for (int i = 0; i < part.getDimension(); i++) {
 			double temp = part.location[i];
-			ret += temp*temp - 10.0*Math.cos(2.0*Math.PI*temp) + 10.0;	  
+			ret += temp*temp - 10.0*Math.cos(2.0*Math.PI*temp) + 10.0;    
 		}
 		
 		return ret;
