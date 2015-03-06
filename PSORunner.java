@@ -119,6 +119,7 @@ public class PSORunner {
 					if (memValue <= temp.hoodBestValue) {
 						temp.hoodBestLoc = hoodMem.location;
 						temp.hoodBestValue = memValue;
+						updateHoodBest(temp);
 						//System.out.println(temp.hoodBestValue);
 					}
 				}
@@ -163,6 +164,13 @@ public class PSORunner {
 		} while (count <= numIterations);
 	}
 	
+	private void updateHoodBest(Particle temp){
+		for (int m = 0; m < temp.getHoodSize(); m++) {
+			particles.get(temp.getNeighborhoodMember(m)).hoodBestValue = temp.hoodBestValue;
+			particles.get(temp.getNeighborhoodMember(m)).hoodBestLoc = temp.hoodBestLoc;
+		}
+	}
+
 	
 	//Returns the value of the specified function for point (x, y)
 	public double eval(Particle part) {
