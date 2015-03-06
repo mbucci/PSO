@@ -158,6 +158,9 @@ public class PSO {
 			} else if ((i+1)%rowSize==0) { //right column
 				temp[2] = i-1;
 				temp[3] = i-(rowSize-1);
+			} else {
+				temp[2] = i-1;
+				temp[3] = i+1;
 			}
 			particles.get(i).setNeighborhood(temp, 4);
 		}
