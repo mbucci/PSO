@@ -59,6 +59,7 @@ public class PSORunner {
 			if (currValue <= temp.hoodBestValue) {
 				temp.hoodBestLoc = temp.location;
 				temp.hoodBestValue = currValue;
+				updateHoodBest(temp);
 			} 
 		}
 	}
