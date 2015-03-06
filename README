@@ -1,1 +1,42 @@
-Created PSO repo
+PSO README
+Max Bucci, Megan Maher, Nikki Morin, Kuangji Chen
+
+Implements PSO with four different topologies and three different algorithms depending on what the user specifies.
+
+
+Input:
+
+	Basic input:
+
+		java PSO <topology type> <num. particles> <num. iterations> <test function> <num. dimensions>
+
+	For topology type, the user can choose between four different topologies, with four different inputs:
+
+		gl => Global Topology
+		ri => Ring Topology
+		vn => Von Neumann Topology
+		ra => Random Toplogy
+
+	For the test function, the user has a choice between three different options:
+
+		rok => Rosenbrok functoin
+		ack => Ackley function
+		ras => Rastrigin function
+
+	Example input: 
+
+		java PSO ri 50 50000 rok 30
+
+
+Output: 
+
+	The output will report the best value for each iteration.
+
+	Example:
+
+	Iteration #1 Best value: 1.7976931348623157E308
+	                    |
+	                    |
+	                    |
+	                    v
+	Iteration #50000 Best value: 13.924688050691932
