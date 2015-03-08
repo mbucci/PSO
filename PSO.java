@@ -194,8 +194,8 @@ public class PSO {
 				// System.out.println("##"+index);
 				//the particle itself will not be in the neighborhood
 				while(index==i){
-					index=(int)rand.nextDouble()*(swarmSize);
-					// System.out.println("&&"+index+"+"+i);
+					index=(int)(rand.nextDouble()*(swarmSize));  //****ERROR WAS HERE
+					//System.out.println("&&"+index+"+"+i);
 				}
 				
 				temp[j]=index;

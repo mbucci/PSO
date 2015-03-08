@@ -139,27 +139,29 @@ public class PSORunner {
 					int K=5; //neighborhood size
 					Random rand = new Random();
 					
-					for (int j=0; j<temp.getHoodSize();j++ ){
 						int[] newHood = new int[K];
-						int index;
+						int index=i;
 						//initialization
 						for (int m=0; m<K; m++){
 							index=(int)(rand.nextDouble()*(this.particles.size()));
 							
 							//the particle itself will not be in the neighborhood
 							while(index==i){
+								//System.out.println("++"+index+"+"+i);
 								index=(int)(rand.nextDouble()*(this.particles.size()));
+								//System.out.println("++"+index+"+"+i);
 							}
 							
 							newHood[m]=index;
 						}
 						
 						temp.setNeighborhood(newHood, K);
-					}
 				
 				}
-			}   
+			}
+			
 			count++;    
+			
 		} while (count <= numIterations);
 	}
 	
