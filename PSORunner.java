@@ -68,11 +68,13 @@ public class PSORunner {
 	//Run PSO
 	public void runPSO(int numIterations, String topology) {
 		
+		System.out.println("\n\nNum iterations: "+numIterations+", Top="+topology+":");
+
 		int count = 1;
 		do {
 
 			if (count%10 == 0){
-				System.out.println("Iteration #" + count + " Best value: " + bestValue);
+				System.out.println(bestValue);
 			}
 			// update all the particles
 			for (int i = 0 ; i < this.particles.size() ; i++) {
